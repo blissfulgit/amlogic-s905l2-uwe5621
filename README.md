@@ -182,6 +182,18 @@ hardware: ready (2s)  sdio=0s wlan0=0s wifi-ioctl=0s hci0=2s eth-link=2s thermal
 - 内核补丁需要自行编译内核（GitHub Actions 或本地交叉编译），`install.sh` 不处理这一步。
 - 仅在 1GB RAM 的 S905L2 上验证，其他内存容量未测。
 
+## 作者
+
+| 角色 | 说明 |
+|---|---|
+| **望舒** ([@blissfulgit](https://github.com/blissfulgit)) | 项目主导。硬件所有者，负责拆机、刷机、真机验证与全部断电冷启测试；从安卓分区挖出厂商 DTB 与无线配置，确认了 UWE5621 的存在；提出「硬件就绪闸门」的需求。 |
+| **千语**（WorkBuddy AI 助手） | 技术实现。DTB 反编译与差异分析、SDIO 拓扑梳理、systemd 依赖设计与排序环定位、闸门脚本、安装/提取脚本、全部文档撰写。 |
+
+贡献细节见 [`AUTHORS.md`](AUTHORS.md)。
+
+> 本项目代码与文档由 AI 助手生成，每一条结论都在真机上验证过（含失败案例，见 `docs/TROUBLESHOOTING.md`）。
+> 若你在别的 S905L2 机型上发现不适用之处，欢迎提 issue —— 硬件差异比想象中大。
+
 ## 致谢
 
 - [ophub/amlogic-s9xxx-armbian](https://github.com/ophub/amlogic-s9xxx-armbian) —— 提供内核与统一镜像
