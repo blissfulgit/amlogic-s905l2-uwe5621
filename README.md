@@ -1,6 +1,6 @@
 # amlogic-s905l2-uwe5621
 
-> 中文 · [English](README.en.md)
+> 中文 · [English](README.en.md) · [下载 v1.0.0](https://github.com/blissfulgit/amlogic-s905l2-uwe5621/releases/tag/v1.0.0)
 
 Bring up the on-board **UNISOC UWE5621DS** Wi-Fi + Bluetooth combo on **Amlogic S905L2** TV boxes running Armbian.
 
