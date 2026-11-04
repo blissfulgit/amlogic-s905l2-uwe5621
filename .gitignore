@@ -1,0 +1,16 @@
+# 固件二进制（版权原因不分发）
+firmware/*.ini
+firmware/*.bin
+firmware/*.txt
+
+# 本地备份（install.sh 会产生）
+*.bak.*
+uEnv.txt.bak*
+armbianEnv.txt.bak*
+
+# 编辑器 / 系统
+.DS_Store
+*.swp
+*~
+.idea/
+.vscode/

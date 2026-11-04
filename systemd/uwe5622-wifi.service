@@ -1,0 +1,25 @@
+[Unit]
+Description=UWE5621 WiFi bring-up (load after boot settles)
+# ---------------------------------------------------------------------------
+# 为什么是 After=multi-user.target：
+#   驱动在 sysinit 阶段加载会报 "didn't get CP2 version"，必须在 mmc/regulator
+#   全部就绪后再 modprobe。multi-user 达成时系统基本外设都初始化完了。
+#
+# 为什么同时写 Wants=multi-user.target：
+#   这是一个自环（自己 wants 自己的排序锚点），systemd 容忍它。
+#   ⚠️ 但只要再有别的 unit 写 After=uwe5622-wifi.service 并且也
+#      WantedBy=multi-user.target，就会变成显式循环，systemd 会**静默删除**
+#      本服务的启动任务（--failed 里也看不到，只有 systemd-analyze verify 能发现）。
+#      本项目里 btattach 因此改由 timer 触发，不进 multi-user 事务。
+# ---------------------------------------------------------------------------
+After=multi-user.target
+Wants=multi-user.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/uwe5622-wifi-up.sh
+TimeoutStartSec=120
+
+[Install]
+WantedBy=multi-user.target

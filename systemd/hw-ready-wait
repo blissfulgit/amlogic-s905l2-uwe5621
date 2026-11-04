@@ -1,0 +1,28 @@
+#!/bin/sh
+# hw-ready-wait [超时秒数] -- 阻塞到硬件全部就绪，可为任意脚本当门闩用
+#
+# 用法:
+#   hw-ready-wait 60 && ./my-task.sh
+#
+# 返回:
+#   0  已就绪（并打印 STATE 行）
+#   1  超时（并把逐项明细打到 stderr）
+
+limit=${1:-120}
+i=0
+
+while [ ! -f /run/hardware-ready ]; do
+    if [ "$i" -ge "$limit" ]; then
+        echo "hw-ready-wait: 超时 ${limit}s，硬件未就绪" >&2
+        cat /run/hardware-status >&2 2>/dev/null
+        exit 1
+    fi
+    sleep 1
+    i=$((i + 1))
+done
+
+if [ "$i" -gt 0 ]; then
+    echo "hw-ready-wait: 等待 ${i}s 后就绪" >&2
+fi
+grep '^STATE' /run/hardware-status 2>/dev/null
+exit 0

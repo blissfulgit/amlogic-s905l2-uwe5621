@@ -1,0 +1,30 @@
+[Unit]
+Description=BT HCI attach for UWE5621 (sprdbt_tty over SDIO)
+# ---------------------------------------------------------------------------
+# 关键设计：本服务「没有」[Install] 段（static），只由 hw-ready 闸门或
+# uwe5622-bt-fallback.timer 触发。这样它不属于 multi-user.target 事务，
+# 于是可以安全地写 After=uwe5622-wifi.service 而不会构成排序环。
+#
+# 如果给它加上 WantedBy=multi-user.target，就会立刻和
+# uwe5622-wifi.service 的 After=multi-user.target 形成环，
+# systemd 会静默删掉启动任务，表现为"开机没蓝牙且没有任何报错"。
+#
+# 蓝牙必须后于 WiFi：两者共用 UWE5621 的 SDIO 通道，btattach 抢在
+# WCN 固件下载完成前会占用芯片，导致 WiFi probe 失败。
+# ---------------------------------------------------------------------------
+After=uwe5622-wifi.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+TimeoutStartSec=150
+
+ExecStartPre=/sbin/modprobe sprdbt_tty
+ExecStartPre=/usr/sbin/rfkill unblock bluetooth
+# 等 tty 节点就绪（sprdbt_tty 加载后即出现，正常几秒内）
+ExecStartPre=/bin/sh -c 'i=0; while [ $i -lt 30 ] && [ ! -e /dev/ttyBT0 ]; do sleep 1; i=$((i+1)); done; exit 0'
+
+ExecStart=/usr/bin/btattach -B /dev/ttyBT0 -P h4 -S 1500000
+
+Restart=always
+RestartSec=10

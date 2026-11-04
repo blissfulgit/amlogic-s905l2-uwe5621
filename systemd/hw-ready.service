@@ -1,0 +1,15 @@
+[Unit]
+Description=Hardware readiness gate (SDIO / WiFi / Bluetooth probe)
+Documentation=file:///run/hardware-status
+# 无 [Install]，由 hw-ready.timer 触发 —— 脱离 multi-user 事务，
+# 因此 After=uwe5622-wifi.service 不会形成排序环（原因见 btattach.service 注释）。
+After=uwe5622-wifi.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+TimeoutStartSec=200
+ExecStart=/usr/local/sbin/hw-ready-check.sh
+StandardOutput=journal
+StandardError=journal

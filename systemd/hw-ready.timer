@@ -1,0 +1,13 @@
+[Unit]
+Description=Run the hardware readiness gate shortly after boot
+# OnBootSec 只是「最早启动窗口」，不是固定延时。
+# 真正的执行时刻由 hw-ready.service 的 After=uwe5622-wifi.service 决定：
+# WiFi 一就绪，闸门立刻开始跑。
+# 实测 S905L2：WiFi 在 27.3s 完成，闸门 29.3s 结束。
+
+[Timer]
+OnBootSec=6s
+Unit=hw-ready.service
+
+[Install]
+WantedBy=timers.target

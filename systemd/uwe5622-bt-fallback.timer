@@ -1,0 +1,12 @@
+[Unit]
+Description=Fallback trigger for btattach if the readiness gate missed it
+# 正常情况下 btattach 由 hw-ready 闸门脚本拉起。
+# 这个 timer 只是兜底：万一闸门没跑或提前失败，90s 时再试一次。
+# btattach 已 active 时 systemd 的 start job 是幂等的，不会重复 attach。
+
+[Timer]
+OnBootSec=90s
+Unit=btattach.service
+
+[Install]
+WantedBy=timers.target
