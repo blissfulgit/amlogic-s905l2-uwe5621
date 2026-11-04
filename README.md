@@ -1,5 +1,7 @@
 # amlogic-s905l2-uwe5621
 
+> 中文 · [English](README.en.md)
+
 Bring up the on-board **UNISOC UWE5621DS** Wi-Fi + Bluetooth combo on **Amlogic S905L2** TV boxes running Armbian.
 
 Amlogic S905L2 机顶盒（X7-5G 及衍生型号）板载 UNISOC UWE5621DS SDIO 双模无线芯片，在 Armbian / ophub 镜像下默认完全不可用。本仓库记录从零打通 WiFi + Bluetooth 的完整方案：设备树补丁、模块参数、固件、内核 HCI 补丁，以及一套开机就绪闸门。
@@ -168,6 +170,8 @@ hardware: ready (2s)  sdio=0s wlan0=0s wifi-ioctl=0s hci0=2s eth-link=2s thermal
 ├── firmware/
 │   ├── extract-from-android.sh             # 从本机安卓分区提取固件
 │   └── README.md
+├── tools/
+│   └── gh-push.py                          # github.com 不通时用 API 推送
 ├── docs/
 │   ├── HARDWARE.md                         # 硬件识别与寄存器线索
 │   ├── TROUBLESHOOTING.md                  # 踩过的坑
@@ -181,6 +185,19 @@ hardware: ready (2s)  sdio=0s wlan0=0s wifi-ioctl=0s hci0=2s eth-link=2s thermal
 - **热重启不可靠**，必须断电冷启，见 `docs/BOOT-RELIABILITY.md`。
 - 内核补丁需要自行编译内核（GitHub Actions 或本地交叉编译），`install.sh` 不处理这一步。
 - 仅在 1GB RAM 的 S905L2 上验证，其他内存容量未测。
+
+## 附：`github.com` 不通时怎么推送
+
+如果 `api.github.com` 能通但 `github.com:443` 被拦截，`git push` 会死在
+`CONNECT tunnel failed`。`tools/gh-push.py` 改走 Git Data 接口完成同样的事：
+
+```sh
+export GITHUB_TOKEN=ghp_xxx
+./tools/gh-push.py --repo <owner>/<name> --dry-run   # 先看会改哪些文件
+./tools/gh-push.py --repo <owner>/<name>
+```
+
+它按 blob sha 跳过未变化的文件，本地删除的文件会同步删除，空仓库时自动打底。
 
 ## 作者
 
