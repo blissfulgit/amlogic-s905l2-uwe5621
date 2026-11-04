@@ -146,7 +146,6 @@ hardware: ready (2s)  sdio=0s wlan0=0s wifi-ioctl=0s hci0=2s eth-link=2s thermal
 ├── systemd/      Wi-Fi bring-up, BT attach, readiness gate
 ├── modprobe/     sdio_host binding (and a deliberate no-op modules-load)
 ├── firmware/     extraction script only, no binaries
-├── tools/        gh-push.py — push when github.com:443 is blocked
 └── docs/         hardware, troubleshooting, boot reliability
 ```
 
